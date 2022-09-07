@@ -8,7 +8,6 @@ import './randomChar.scss';
 class RandomChar extends Component {
     constructor(props) {
         super(props);
-        this.updateCharacter();
     }
 
     state = {
@@ -18,6 +17,10 @@ class RandomChar extends Component {
     }
 
     marvelService = new MarvelService();
+
+    componentDidMount() {
+        this.updateCharacter();
+    }
 
     onCharacterLoaded = (character) => {
         this.setState({
