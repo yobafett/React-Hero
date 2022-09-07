@@ -85,9 +85,11 @@ class RandomChar extends Component {
 const View = ({ character }) => {
     const { name, description, thumbnail, homepage, wiki } = character;
 
+    const hasPic = !thumbnail.includes('image_not_available');
+
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className="randomchar__img" />
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={{objectFit: hasPic ? 'cover' : 'contain'}}/>
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">{description ? description.slice(0, 50) + '...' : 'description is none'}</p>
