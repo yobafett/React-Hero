@@ -8,15 +8,13 @@ import './randomChar.scss';
 class RandomChar extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            character: {},
+            loading: true,
+            error: false,
+        }
+        this.marvelService = new MarvelService();
     }
-
-    state = {
-        character: {},
-        loading: true,
-        error: false,
-    }
-
-    marvelService = new MarvelService();
 
     componentDidMount() {
         this.updateCharacter();
@@ -45,7 +43,7 @@ class RandomChar extends Component {
 
     updateCharacter = () => {
         this.onLoadStart();
-        
+
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
         this.marvelService.getCharacter(id)
             .then(this.onCharacterLoaded)
@@ -54,7 +52,7 @@ class RandomChar extends Component {
 
     render() {
         const { character, loading, error } = this.state;
-        
+
         const errorMessage = error ? <ErrorMessage /> : null;
         const spinner = loading ? <Spinner /> : null;
         const content = !(error || loading) ? <View character={character} /> : null;
@@ -84,12 +82,11 @@ class RandomChar extends Component {
 
 const View = ({ character }) => {
     const { name, description, thumbnail, homepage, wiki } = character;
-
     const hasPic = !thumbnail.includes('image_not_available');
 
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className="randomchar__img" style={{objectFit: hasPic ? 'cover' : 'contain'}}/>
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={{ objectFit: hasPic ? 'cover' : 'contain' }} />
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">{description ? description.slice(0, 50) + '...' : 'description is none'}</p>
