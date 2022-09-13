@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { React, Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -21,6 +21,7 @@ class CharList extends Component {
         }
 
         this.marvelService = new MarvelService();
+        this.charRefs = [];
     }
 
     componentDidMount() {
@@ -41,7 +42,7 @@ class CharList extends Component {
         })
     }
 
-    onCharListLoaded = (newCharList) => {        
+    onCharListLoaded = (newCharList) => {
         const charsEnded = newCharList.length < 9;
 
         this.setState(({ charList, offset }) => ({
@@ -60,6 +61,10 @@ class CharList extends Component {
         })
     }
 
+    addActiveCharRef = (charElem) => {
+        this.charRefs.push(charElem);
+    }
+
     // Этот метод создан для оптимизации, 
     // чтобы не помещать такую конструкцию в метод render
     renderItems(arr) {
@@ -73,7 +78,19 @@ class CharList extends Component {
                 <li
                     className="char__item"
                     key={item.id}
-                    onClick={() => this.props.onCharSelected(item.id)}>
+                    ref={this.addActiveCharRef}
+                    data-charid={item.id}
+                    onClick={() => {
+                        this.charRefs.forEach(element => {
+                            if (item.id === +element.dataset.charid) {
+                                element.classList.add('char__item_selected');
+                            } else {
+                                element.classList.remove('char__item_selected');
+                            }
+
+                            this.props.onCharSelected(item.id);
+                        });
+                    }}>
                     <img src={item.thumbnail} alt={item.name} style={imgStyle} />
                     <div className="char__name">{item.name}</div>
                 </li>
