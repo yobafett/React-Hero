@@ -44,7 +44,7 @@ const ComicsList = () => {
             return (
                 <li
                     className="comics__item"
-                    key={item.id}
+                    key={arr.length + i}
                     data-comicsid={item.id}>
                     <img className="comics__item-img" src={item.thumbnail} alt={item.name} style={imgStyle} />
                     <div className="comics__item-name">{item.name}</div>
