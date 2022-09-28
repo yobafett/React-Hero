@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -42,13 +43,12 @@ const ComicsList = () => {
             }
 
             return (
-                <li
-                    className="comics__item"
-                    key={arr.length + i}
-                    data-comicsid={item.id}>
-                    <img className="comics__item-img" src={item.thumbnail} alt={item.name} style={imgStyle} />
-                    <div className="comics__item-name">{item.name}</div>
-                    <div className="comics__item-price">{item.price}$</div>
+                <li className="comics__item" key={arr.length + i}>
+                    <Link to={`/comics/${item.id}`}>
+                        <img className="comics__item-img" src={item.thumbnail} alt={item.name} style={imgStyle} />
+                        <div className="comics__item-name">{item.title}</div>
+                        <div className="comics__item-price">{item.price}$</div>
+                    </Link>
                 </li>
             )
         });
