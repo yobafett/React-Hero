@@ -48,7 +48,6 @@ const CharList = (props) => {
                 <CSSTransition
                     key={item.id}
                     timeout={1000}
-                    onEnter={() => console.log('ender')}
                     classNames="char__item">
                     <li
                         className="char__item"
