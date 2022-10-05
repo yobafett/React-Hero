@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -44,31 +45,38 @@ const CharList = (props) => {
             }
 
             return (
-                <li
-                    className="char__item"
+                <CSSTransition
                     key={item.id}
-                    ref={(charElem) => charRefs.current[i] = charElem}
-                    data-charid={item.id}
-                    onClick={() => {
-                        charRefs.current.forEach(element => {
-                            if (item.id === +element.dataset.charid) {
-                                element.classList.add('char__item_selected');
-                            } else {
-                                element.classList.remove('char__item_selected');
-                            }
+                    timeout={1000}
+                    onEnter={() => console.log('ender')}
+                    classNames="char__item">
+                    <li
+                        className="char__item"
+                        ref={(charElem) => charRefs.current[i] = charElem}
+                        data-charid={item.id}
+                        onClick={() => {
+                            charRefs.current.forEach(element => {
+                                if (item.id === +element.dataset.charid) {
+                                    element.classList.add('char__item_selected');
+                                } else {
+                                    element.classList.remove('char__item_selected');
+                                }
 
-                            props.onCharSelected(item.id);
-                        });
-                    }}>
-                    <img src={item.thumbnail} alt={item.name} style={imgStyle} />
-                    <div className="char__name">{item.name}</div>
-                </li>
+                                props.onCharSelected(item.id);
+                            });
+                        }}>
+                        <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                </CSSTransition>
             )
         });
         // А эта конструкция вынесена для центровки спиннера/ошибки
         return (
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }
