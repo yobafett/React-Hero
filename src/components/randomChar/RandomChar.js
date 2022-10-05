@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { CSSTransition } from 'react-transition-group';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
@@ -21,7 +23,7 @@ const RandomChar = () => {
 
     const updateChar = () => {
         clearError();
-        
+
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
         getCharacter(id)
             .then(onCharLoaded);
@@ -35,7 +37,14 @@ const RandomChar = () => {
         <div className="randomchar">
             {errorMessage}
             {spinner}
-            {content}
+            <CSSTransition
+                in={!!content}
+                timeout={500}
+                classNames="randomchar__block">
+                <>
+                    {content}
+                </>
+            </CSSTransition>
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br />
@@ -61,6 +70,7 @@ const View = ({ char }) => {
     }
 
     return (
+
         <div className="randomchar__block">
             <img src={thumbnail} alt="Random character" className="randomchar__img" style={imgStyle} />
             <div className="randomchar__info">
@@ -78,6 +88,7 @@ const View = ({ char }) => {
                 </div>
             </div>
         </div>
+
     )
 }
 
