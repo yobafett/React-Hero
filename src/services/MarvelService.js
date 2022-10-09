@@ -18,6 +18,16 @@ const useMarvelService = () => {
         return _transformCharacterData(result.data.results[0]);
     }
 
+    const findCharacter = async (searchString) => {
+        const result = await request(`${_apiBase}/characters?nameStartsWith=${searchString}&apikey=${_publicApiKey}`);
+
+        if(result.data.count > 0){
+            return result.data.results.map(_transformCharacterData);
+        } else {
+            return [];
+        }
+    }
+
     const _transformCharacterData = (character) => {
         return {
             id: character.id,
@@ -52,7 +62,7 @@ const useMarvelService = () => {
         }
     }
 
-    return { loading, error, getAllCharacters, getCharacter, clearError, getAllComics, getComic };
+    return { loading, error, getAllCharacters, getCharacter, findCharacter, clearError, getAllComics, getComic };
 }
 
 export default useMarvelService;
