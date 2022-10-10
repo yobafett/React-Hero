@@ -1,5 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import useMarvelService from '../../services/MarvelService';
 
 import './charSearch.scss';
@@ -45,9 +47,11 @@ const CharSearch = () => {
         if (charList.length > 1) {
             return charList.map(item => {
                 return (
-                    <li onClick={() => setSelectedChar(item)} key={item.id}>
-                        {item.name}
-                    </li>
+                    <Link to={`/char/${item.id}`}>
+                        <li onClick={() => setSelectedChar(item)} key={item.id}>
+                            {item.name}
+                        </li>
+                    </Link>
                 )
             });
         } else {
