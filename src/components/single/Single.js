@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -64,6 +65,13 @@ const ComicView = ({ comic }) => {
 
     return (
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content={`Page of ${title} comic`}
+                />
+                <title>{title}</title>
+            </Helmet>
             <img src={thumbnail} alt={title} className="single-comic__img" />
             <div className="single-comic__info">
                 <h2 className="single-comic__name">{title}</h2>
@@ -82,6 +90,13 @@ const CharView = ({ char }) => {
 
     return (
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content={`Page of ${name} character`}
+                />
+                <title>{name}</title>
+            </Helmet>
             <img src={thumbnail} alt={name} className="single-comic__img" />
             <div className="single-comic__info">
                 <h2 className="single-comic__name">{name}</h2>
