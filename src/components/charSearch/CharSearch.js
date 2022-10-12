@@ -27,8 +27,8 @@ const CharSearch = () => {
         if (charList.length > 1) {
             return charList.map(item => {
                 return (
-                    <Link to={`/char/${item.id}`}>
-                        <li onClick={() => setSelectedChar(item)} key={item.id}>
+                    <Link to={`/char/${item.id}`} key={item.id}>
+                        <li onClick={() => setSelectedChar(item)} >
                             {item.name}
                         </li>
                     </Link>
@@ -62,7 +62,7 @@ const CharSearch = () => {
                             <div className="inner">try it</div>
                         </button>
                     </div>
-                    <ErrorMessage className="error" name="name" component='div'/>
+                    <ErrorMessage className="error" name="name" component='div' />
                 </Form>
             </Formik>
             <ul className='search-result'>{searchResults}</ul>
