@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
+import setContent from '../../utils/setContent';
 
 import './comicsList.scss';
 
@@ -14,7 +12,7 @@ const ComicsList = () => {
     const [offset, setOffset] = useState(210);
     const [comicsEnded, setComicsEnded] = useState(false);
 
-    const { loading, error, getAllComics } = useMarvelService();
+    const { process, setProcessConfirmed, getAllComics } = useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -23,7 +21,8 @@ const ComicsList = () => {
     const onRequest = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
         getAllComics(offset)
-            .then(onComicsListLoaded);
+            .then(onComicsListLoaded)
+            .then(setProcessConfirmed);
     }
 
     const onComicsListLoaded = (newComicsList) => {
@@ -52,7 +51,6 @@ const ComicsList = () => {
                 </li>
             )
         });
-        // А эта конструкция вынесена для центровки спиннера/ошибки
         return (
             <ul className="comics__grid">
                 {items}
@@ -60,15 +58,9 @@ const ComicsList = () => {
         )
     }
 
-    const items = renderItems(comicsList);
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner /> : null;
-
     return (
         <div className="comics__list">
-            {errorMessage}
-            {spinner}
-            {items}
+            {setContent(process, () => renderItems(comicsList), null, newItemsLoading)}
             <button className="button button__main button__long"
                 disabled={newItemsLoading}
                 style={{ display: comicsEnded ? 'none' : 'block' }}

@@ -2,20 +2,20 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
+import setContent from '../../utils/setContent';
+import AppBanner from '../appBanner/AppBanner';
 
 import './single.scss';
 
 const Single = (props) => {
     const [contentData, setContentData] = useState(null);
     const { comicId, charId } = props;
-    const { loading, error, getComic, getCharacter, clearError } = useMarvelService();
+    const { process, setProcessConfirmed, getComic, getCharacter, clearError } = useMarvelService();
 
     useEffect(() => {
         updateContentData();
-    }, [props.comicId, props.charId]);
+    }, [comicId, charId]);
 
     const updateContentData = () => {
         if (!comicId && !charId) {
@@ -26,10 +26,12 @@ const Single = (props) => {
 
         if (comicId) {
             getComic(comicId)
-                .then(onContentDataLoaded);
+                .then(onContentDataLoaded)
+                .then(setProcessConfirmed);
         } else {
             getCharacter(charId)
-                .then(onContentDataLoaded);
+                .then(onContentDataLoaded)
+                .then(setProcessConfirmed);
         }
     }
 
@@ -37,34 +39,19 @@ const Single = (props) => {
         setContentData(contentData);
     }
 
-    const backLink = `/${comicId ? `comics` : null}`;
-    const errorBlock = (
-        <>
-            <ErrorMessage />
-            <Link to={backLink} className="single-comic__back">Back to all</Link>
-        </>
-    );
-
-    const errorMessage = error ? errorBlock : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error || !contentData) ?
-        comicId ? <ComicView comic={contentData} /> :
-            <CharView char={contentData} /> : null;
-
     return (
-        <div className="single-comic">
-            {errorMessage}
-            {spinner}
-            {content}
-        </div>
+        <>
+            <AppBanner />
+            {setContent(process, comicId ? ComicView : CharView, contentData)}
+        </>
     )
 }
 
-const ComicView = ({ comic }) => {
-    const { title, description, thumbnail, price, pageCount, language } = comic;
+const ComicView = ({ data }) => {
+    const { title, description, thumbnail, price, pageCount, language } = data;
 
     return (
-        <>
+        <div className="single-comic">
             <Helmet>
                 <meta
                     name="description"
@@ -81,15 +68,15 @@ const ComicView = ({ comic }) => {
                 <div className="single-comic__price">{price}$</div>
             </div>
             <Link to="/comics" className="single-comic__back">Back to all</Link>
-        </>
+        </div>
     );
 }
 
-const CharView = ({ char }) => {
-    const { name, description, thumbnail } = char;
+const CharView = ({ data }) => {
+    const { name, description, thumbnail } = data;
 
     return (
-        <>
+        <div className="single-comic">
             <Helmet>
                 <meta
                     name="description"
@@ -103,7 +90,7 @@ const CharView = ({ char }) => {
                 <p className="single-comic__descr">{description ? description : 'There is no description'}</p>
             </div>
             <Link to="/" className="single-comic__back">Back to all</Link>
-        </>
+        </div>
     );
 }
 

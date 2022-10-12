@@ -2,9 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
+import setContent from '../../utils/setContent';
 
 import './charList.scss';
 
@@ -14,7 +13,7 @@ const CharList = (props) => {
     const [offset, setOffset] = useState(210);
     const [charsEnded, setCharsEnded] = useState(false);
 
-    const { loading, error, getAllCharacters } = useMarvelService();
+    const { process, setProcessConfirmed, getAllCharacters } = useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -23,7 +22,8 @@ const CharList = (props) => {
     const onRequest = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
         getAllCharacters(offset)
-            .then(onCharListLoaded);
+            .then(onCharListLoaded)
+            .then(setProcessConfirmed);
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -80,15 +80,9 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItems(charList);
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner /> : null;
-
     return (
         <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {items}
+            {setContent(process, () => renderItems(charList), null, newItemsLoading)}
             <button className="button button__main button__long"
                 disabled={newItemsLoading}
                 style={{ display: charsEnded ? 'none' : 'block' }}
